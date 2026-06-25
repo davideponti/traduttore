@@ -230,10 +230,10 @@ class TraduttoreApp {
     if (!this.patientResponses || this.patientResponses.length === 0) return;
 
     const groups = {
-      '😣 Dolore e Sintomi': { keywords: ['pain', 'hurt', 'nauseous', 'vomit', 'dizzy', 'bleeding', 'fever', 'head', 'stomach'], emoji: '😣' },
-      '😤 Difficoltà e Urgenze': { keywords: ['cannot', 'breathe', 'help', 'scared', 'call', 'cold', 'hot', 'sleep', 'see', 'hear', 'fell'], emoji: '😤' },
-      '🙂 Bisogni e Stati': { keywords: ['thirsty', 'hungry', 'water', 'bathroom', 'medicine', 'allergic', 'diabetic', 'pressure'], emoji: '🙂' },
-      '📝 Risposte Base': { keywords: ['yes', 'no', 'understand', 'repeat', 'thank', 'better', 'worse', 'when'], emoji: '📝' }
+      '😣 Pain and Symptoms': { keywords: ['pain', 'hurt', 'nauseous', 'vomit', 'dizzy', 'bleeding', 'fever', 'head', 'stomach'], emoji: '😣' },
+      '😤 Difficulties and Emergencies': { keywords: ['cannot', 'breathe', 'help', 'scared', 'call', 'cold', 'hot', 'sleep', 'see', 'hear', 'fell'], emoji: '😤' },
+      '🙂 Needs and Conditions': { keywords: ['thirsty', 'hungry', 'water', 'bathroom', 'medicine', 'allergic', 'diabetic', 'pressure'], emoji: '🙂' },
+      '📝 Basic Responses': { keywords: ['yes', 'no', 'understand', 'repeat', 'thank', 'better', 'worse', 'when'], emoji: '📝' }
     };
 
     const unassigned = [...this.patientResponses];
@@ -292,7 +292,7 @@ class TraduttoreApp {
       details.className = 'accordion-item';
       const summary = document.createElement('summary');
       summary.className = 'accordion-summary';
-      summary.innerHTML = `<span class="accordion-summary-icon">🗯️</span><span class="accordion-label">Altre risposte</span><span class="accordion-count">${unassigned.length}</span>`;
+      summary.innerHTML = `<span class="accordion-summary-icon">🗯️</span><span class="accordion-label">Other responses</span><span class="accordion-count">${unassigned.length}</span>`;
       details.appendChild(summary);
       const content = document.createElement('div');
       content.className = 'accordion-content';
