@@ -1,0 +1,10 @@
+export default {
+  build: {
+    builder: "NIXPACKS",
+    buildCommand: "npm install",
+  },
+  deploy: {
+    startCommand: "node server.js",
+    healthcheckPath: "/",
+  },
+};
