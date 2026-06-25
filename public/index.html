@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Traduttore Medico 🏥</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🏥 Traduttore Medico</h1>
+      <p class="subtitle">Italiano ↔ Inglese · Pensato per infermieri e personale sanitario</p>
+    </header>
+
+    <div class="mode-selector">
+      <button id="modeITEN" class="mode-btn active" data-source="it" data-target="en">
+        🇮🇹 Italiano → 🇬🇧 Inglese (paziente straniero)
+      </button>
+      <button id="modeENIT" class="mode-btn" data-source="en" data-target="it">
+        🇬🇧 Inglese → 🇮🇹 Italiano (paziente italiano)
+      </button>
+    </div>
+
+    <!-- FRASI MEDICHE VELOCI -->
+    <div class="phrases-panel">
+      <div class="phrases-header">
+        <h2>📋 Frasi Mediche Rapide</h2>
+        <div class="phrases-categories" id="phrasesCategories">
+          <button class="cat-btn active" data-category="all">Tutte</button>
+          <button class="cat-btn" data-category="accoglienza">Accoglienza</button>
+          <button class="cat-btn" data-category="sintomi">Sintomi</button>
+          <button class="cat-btn" data-category="corpo">Parti del corpo</button>
+          <button class="cat-btn" data-category="cure">Cure</button>
+          <button class="cat-btn" data-category="procedure">Procedure</button>
+          <button class="cat-btn" data-category="emergenza">🚨 Emergenza</button>
+          <button class="cat-btn" data-category="rassicurazioni">Rassicurazioni</button>
+          <button class="cat-btn" data-category="dimissioni">Dimissioni</button>
+        </div>
+      </div>
+      <div class="phrases-list" id="phrasesList">
+        <!-- Popolato da JS -->
+      </div>
+    </div>
+
+    <div class="main-panel">
+      <!-- Pannello di registrazione -->
+      <div class="panel recording-panel">
+        <div class="panel-header">
+          <h2>🎙️ Parla ora</h2>
+          <div class="controls">
+            <button id="startBtn" class="btn btn-record">
+              <span class="icon">🎤</span>
+              <span class="label">Avvia Microfono</span>
+            </button>
+            <button id="stopBtn" class="btn btn-stop" disabled>
+              <span class="icon">⏹️</span>
+              <span class="label">Ferma</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="audio-indicator" id="audioIndicator">
+          <div class="bar-container">
+            <div class="bar" id="audioBar"></div>
+          </div>
+          <div class="status" id="status">In attesa...</div>
+        </div>
+
+        <div class="recognition-area">
+          <div class="interim-text" id="interimText"></div>
+          <div class="final-text" id="finalText">
+            <span class="placeholder">Il testo riconosciuto apparirà qui...</span>
+          </div>
+        </div>
+
+        <div class="suggestions" id="suggestionsPanel" style="display:none;">
+          <div class="suggestions-header">
+            <span>💡 Parola medica non chiara. Suggerimenti:</span>
+            <span class="badge" id="fragmentBadge"></span>
+          </div>
+          <div class="suggestions-list" id="suggestionsList"></div>
+        </div>
+      </div>
+
+      <!-- Pannello traduzione -->
+      <div class="panel translation-panel">
+        <div class="panel-header">
+          <h2>🌍 Traduzione</h2>
+          <div class="controls">
+            <button id="speakBtn" class="btn btn-speak" disabled>
+              <span class="icon">🔊</span>
+              <span class="label">Ascolta</span>
+            </button>
+            <button id="copyBtn" class="btn btn-copy" disabled>
+              <span class="icon">📋</span>
+              <span class="label">Copia</span>
+            </button>
+            <button id="clearBtn" class="btn btn-clear">
+              <span class="icon">🗑️</span>
+              <span class="label">Cancella</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="translation-result" id="translationResult">
+          <span class="placeholder">La traduzione apparirà qui...</span>
+        </div>
+
+        <div class="confidence-info" id="confidenceInfo" style="display:none;">
+          <div class="confidence-bar-container">
+            <div class="confidence-label">
+              <span>Confidenza riconoscimento</span>
+              <span id="confidenceValue">0%</span>
+            </div>
+            <div class="confidence-bar">
+              <div class="confidence-fill" id="confidenceFill"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Storico traduzioni -->
+        <div class="history" id="historyPanel" style="display:none;">
+          <div class="history-header">
+            <span>📝 Storico conversazione</span>
+          </div>
+          <div class="history-list" id="historyList"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Impostazioni accessibilità -->
+    <div class="settings-panel">
+      <details>
+        <summary>⚙️ Impostazioni</summary>
+        <div class="settings-grid">
+          <div class="setting">
+            <label for="sensitivitySlider">Sensibilità microfono</label>
+            <input type="range" id="sensitivitySlider" min="0" max="100" value="70">
+            <span id="sensitivityValue">70%</span>
+          </div>
+          <div class="setting">
+            <label>
+              <input type="checkbox" id="difficultyMode">
+              🗣️ Paziente con difficoltà di parola
+            </label>
+            <p class="setting-hint">Per pazienti che parlano lentamente o con difficoltà. L'app ripete il riconoscimento e trova la frase più probabile.</p>
+          </div>
+          <div class="setting">
+            <label>
+              <input type="checkbox" id="clipMode" checked>
+              ✂️ Completa parole tagliate
+            </label>
+            <p class="setting-hint">Se il paziente non finisce le parole, cerca di completarle con termini medici.</p>
+          </div>
+          <div class="setting">
+            <label>
+              <input type="checkbox" id="autoTranslate" checked>
+              🔄 Traduzione automatica
+            </label>
+          </div>
+          <div class="setting">
+            <label>
+              <input type="checkbox" id="autoSpeak">
+              🔊 Leggi traduzione ad alta voce
+            </label>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <footer>
+      <p>🏥 <strong>Traduttore Medico</strong> — Premi <kbd>Spazio</kbd> per parlare, <kbd>Esc</kbd> per fermare. Usa le <strong>frasi rapide</strong> sopra per comunicare velocemente. Per emergenze, usa la categoria 🚨 Emergenza.</p>
+    </footer>
+  </div>
+
+  <script src="js/speech-recognizer.js"></script>
+  <script src="js/translator.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
