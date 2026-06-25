@@ -46,6 +46,12 @@ app.get('/api/medical-phrases', (req, res) => {
   res.json({ phrases });
 });
 
+// Risposte del paziente
+app.get('/api/patient-responses', (req, res) => {
+  const responses = getPatientResponses();
+  res.json({ responses });
+});
+
 // Dizionario medico per completamento parole tagliate
 function findWordCompletions(fragment, lang) {
   const dictionaries = {
@@ -173,6 +179,48 @@ function levenshteinDistance(a, b) {
     }
   }
   return matrix[b.length][a.length];
+}
+
+// Frasi risposte del paziente (paziente parla inglese, infermiere vede IT)
+function getPatientResponses() {
+  return [
+    { english: 'I have pain here', italian: 'Ho dolore qui', emoji: '😣' },
+    { english: 'It hurts a lot', italian: 'Fa molto male', emoji: '😖' },
+    { english: 'I feel better', italian: 'Mi sento meglio', emoji: '🙂' },
+    { english: 'I feel worse', italian: 'Mi sento peggio', emoji: '😰' },
+    { english: 'I feel nauseous', italian: 'Ho la nausea', emoji: '🤢' },
+    { english: 'I need to vomit', italian: 'Devo vomitare', emoji: '🤮' },
+    { english: 'I am dizzy', italian: 'Ho le vertigini', emoji: '😵' },
+    { english: 'I cannot breathe', italian: 'Non riesco a respirare', emoji: '😤' },
+    { english: 'I am thirsty', italian: 'Ho sete', emoji: '💧' },
+    { english: 'I am hungry', italian: 'Ho fame', emoji: '🍽️' },
+    { english: 'I am cold', italian: 'Ho freddo', emoji: '🥶' },
+    { english: 'I am hot', italian: 'Ho caldo', emoji: '🥵' },
+    { english: 'Yes', italian: 'Sì', emoji: '✅' },
+    { english: 'No', italian: 'No', emoji: '❌' },
+    { english: 'I do not understand', italian: 'Non capisco', emoji: '🤷' },
+    { english: 'Please repeat', italian: 'Ripeta per favore', emoji: '🔄' },
+    { english: 'I am scared', italian: 'Ho paura', emoji: '😨' },
+    { english: 'Call the doctor', italian: 'Chiami il medico', emoji: '🆘' },
+    { english: 'I need water', italian: 'Ho bisogno di acqua', emoji: '🚰' },
+    { english: 'I need to use the bathroom', italian: 'Devo andare in bagno', emoji: '🚻' },
+    { english: 'I cannot sleep', italian: 'Non riesco a dormire', emoji: '😴' },
+    { english: 'I am allergic to...', italian: 'Sono allergico a...', emoji: '⚠️' },
+    { english: 'I am diabetic', italian: 'Sono diabetico', emoji: '💉' },
+    { english: 'I have high blood pressure', italian: 'Ho la pressione alta', emoji: '🩸' },
+    { english: 'I take medicine for...', italian: 'Prendo medicine per...', emoji: '💊' },
+    { english: 'When can I go home?', italian: 'Quando posso tornare a casa?', emoji: '🏠' },
+    { english: 'Thank you', italian: 'Grazie', emoji: '🙏' },
+    { english: 'Where is the bathroom?', italian: 'Dov\'è il bagno?', emoji: '🚻' },
+    { english: 'Help!', italian: 'Aiuto!', emoji: '🆘' },
+    { english: 'I cannot see well', italian: 'Non vedo bene', emoji: '👓' },
+    { english: 'I cannot hear well', italian: 'Non sento bene', emoji: '🦻' },
+    { english: 'My head hurts', italian: 'Mi fa male la testa', emoji: '🤕' },
+    { english: 'My stomach hurts', italian: 'Mi fa male la pancia', emoji: '🤒' },
+    { english: 'I have a fever', italian: 'Ho la febbre', emoji: '🌡️' },
+    { english: 'I am bleeding', italian: 'Sto sanguinando', emoji: '🩹' },
+    { english: 'I fell down', italian: 'Sono caduto', emoji: '🤕' },
+  ];
 }
 
 // Frasi mediche predefinite - SENZA emergenza

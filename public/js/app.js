@@ -28,6 +28,7 @@ class TraduttoreApp {
     this._bindEvents();
     this._loadVoices();
     this._loadMedicalPhrases();
+    this._loadPatientResponses();
     
     console.log('🏥 Traduttore Medico pronto!');
   }
@@ -72,7 +73,8 @@ class TraduttoreApp {
       phrasesList: document.getElementById('phrasesList'),
       phrasesCategories: document.getElementById('phrasesCategories'),
       historyPanel: document.getElementById('historyPanel'),
-      historyList: document.getElementById('historyList')
+      historyList: document.getElementById('historyList'),
+      patientResponsesList: document.getElementById('patientResponsesList')
     };
   }
 
@@ -220,6 +222,57 @@ class TraduttoreApp {
         this._stopRecording();
       }
     });
+  }
+
+  // === Risposte del Paziente ===
+
+  async _loadPatientResponses() {
+    try {
+      this.patientResponses = await this.translator.getPatientResponses();
+      this._renderPatientResponses();
+    } catch (e) {
+      console.warn('Errore caricamento risposte paziente:', e);
+    }
+  }
+
+  _renderPatientResponses() {
+    if (!this.dom.patientResponsesList) return;
+    
+    this.dom.patientResponsesList.innerHTML = '';
+    
+    if (!this.patientResponses || this.patientResponses.length === 0) return;
+    
+    this.patientResponses.forEach(resp => {
+      const btn = document.createElement('button');
+      btn.className = 'patient-resp-btn';
+      const isEN = this.translator.sourceLang === 'it';
+      const displayText = isEN ? resp.english : resp.italian;
+      const translateTo = isEN ? resp.italian : resp.english;
+      
+      btn.innerHTML = `<span class="resp-emoji">${resp.emoji}</span><span class="resp-text">${displayText}</span><span class="resp-translation">→ ${translateTo}</span>`;
+      
+      btn.addEventListener('click', () => {
+        this._usePatientResponse(displayText, translateTo, isEN ? 'en-US' : 'it-IT');
+      });
+      
+      this.dom.patientResponsesList.appendChild(btn);
+    });
+  }
+
+  _usePatientResponse(text, translation, speakLang) {
+    this.currentText = text;
+    this._updateFinalText(text);
+    
+    this.currentTranslation = translation;
+    this.dom.translationResult.textContent = translation;
+    this.dom.translationResult.style.borderLeftColor = '#4CAF50';
+    this.dom.speakBtn.disabled = false;
+    this.dom.copyBtn.disabled = false;
+    
+    this._addToHistory(text, translation);
+    
+    // Leggi la risposta in italiano per l'infermiere
+    setTimeout(() => this.translator.speak(translation, 'it-IT'), 300);
   }
 
   _loadVoices() {
@@ -494,8 +547,9 @@ class TraduttoreApp {
     this.dom.modeITEN.classList.toggle('active', source === 'it');
     this.dom.modeENIT.classList.toggle('active', source === 'en');
     
-    // Ricarica frasi con lingua aggiornata
+    // Ricarica frasi e risposte con lingua aggiornata
     this._loadMedicalPhrases();
+    this._loadPatientResponses();
     
     if (this.isRecording) {
       this._clear();

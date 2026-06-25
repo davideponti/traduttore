@@ -161,6 +161,21 @@ class Translator {
   }
 
   /**
+   * Carica le risposte del paziente dal server
+   */
+  async getPatientResponses() {
+    try {
+      const response = await fetch('/api/patient-responses');
+      if (!response.ok) throw new Error('Errore caricamento risposte');
+      const data = await response.json();
+      return data.responses || [];
+    } catch (error) {
+      console.warn('Errore caricamento risposte paziente:', error);
+      return [];
+    }
+  }
+
+  /**
    * Sintesi vocale del testo tradotto
    */
   speak(text, lang) {

@@ -641,6 +641,99 @@ footer {
   border-radius: 2px;
 }
 
+/* === Risposte Paziente === */
+.patient-responses-panel {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.patient-responses-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, rgba(76,175,80,0.15), rgba(108,99,255,0.1));
+  border-bottom: 1px solid var(--card-border);
+}
+
+.patient-responses-header h2 {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.badge-info {
+  font-size: 0.75rem;
+  background: rgba(255,255,255,0.08);
+  padding: 4px 10px;
+  border-radius: 20px;
+  color: var(--text-dim);
+}
+
+.patient-responses-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 6px;
+  padding: 10px;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.patient-responses-grid::-webkit-scrollbar {
+  width: 4px;
+}
+
+.patient-responses-grid::-webkit-scrollbar-thumb {
+  background: var(--card-border);
+  border-radius: 2px;
+}
+
+.patient-resp-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  background: rgba(76,175,80,0.08);
+  border: 1px solid rgba(76,175,80,0.2);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: left;
+}
+
+.patient-resp-btn:hover {
+  background: rgba(76,175,80,0.2);
+  border-color: var(--success);
+  transform: translateY(-1px);
+}
+
+.patient-resp-btn:active {
+  transform: scale(0.97);
+}
+
+.resp-emoji {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.resp-text {
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.resp-translation {
+  font-size: 0.7rem;
+  color: var(--success);
+  margin-left: auto;
+  white-space: nowrap;
+}
+
 /* === kdb === */
 kbd {
   background: rgba(255,255,255,0.1);
