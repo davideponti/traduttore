@@ -538,200 +538,185 @@ footer {
   white-space: nowrap;
 }
 
-/* === Medical Phrases Panel === */
-.phrases-panel {
+/* === Accordion Blocks (Frasi + Risposte Paziente) === */
+.accordion-block {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
   border-radius: var(--radius);
-  padding: 16px 20px;
-  margin-bottom: 16px;
-}
-
-.phrases-header {
   margin-bottom: 12px;
+  overflow: hidden;
 }
 
-.phrases-header h2 {
-  font-size: 1.1rem;
-  color: var(--text-bright);
-  margin-bottom: 10px;
-}
-
-.phrases-categories {
+.accordion-block-header {
   display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text-bright);
+  border-bottom: 1px solid var(--card-border);
+  background: linear-gradient(135deg, rgba(108,99,255,0.1), rgba(108,99,255,0.03));
 }
 
-.cat-btn {
-  padding: 6px 14px;
-  background: transparent;
-  border: 1px solid var(--card-border);
+.accordion-block-header.accent-green {
+  background: linear-gradient(135deg, rgba(76,175,80,0.12), rgba(76,175,80,0.03));
+}
+
+.accordion-block-icon {
+  font-size: 1.2rem;
+}
+
+.accordion-block-badge {
+  margin-left: auto;
+  font-size: 0.75rem;
+  font-weight: 400;
+  background: rgba(255,255,255,0.06);
+  padding: 3px 10px;
   border-radius: 20px;
   color: var(--text-dim);
-  cursor: pointer;
-  font-size: 0.8rem;
-  transition: var(--transition);
   white-space: nowrap;
 }
 
-.cat-btn:hover {
-  border-color: var(--primary);
-  color: var(--text);
+.accordion-container {
+  padding: 6px 10px 10px;
 }
 
-.cat-btn.active {
-  background: rgba(108, 99, 255, 0.15);
-  border-color: var(--primary);
-  color: var(--text-bright);
+.accordion-item {
+  margin-bottom: 4px;
+  border-radius: var(--radius-sm);
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.04);
+  overflow: hidden;
 }
 
-.phrases-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 6px;
-  max-height: 280px;
-  overflow-y: auto;
+.accordion-item[open] {
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(255,255,255,0.08);
 }
 
-.phrase-chip {
+.accordion-summary {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid var(--card-border);
+  gap: 8px;
+  padding: 10px 12px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text);
+  user-select: none;
+  list-style: none;
+}
+
+.accordion-summary::-webkit-details-marker {
+  display: none;
+}
+
+.accordion-summary::before {
+  content: '▶';
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  transition: transform 0.2s ease;
+  margin-right: 4px;
+}
+
+.accordion-item[open] > .accordion-summary::before {
+  content: '▼';
+}
+
+.accordion-summary:hover {
+  background: rgba(255,255,255,0.03);
+}
+
+.accordion-summary-icon {
+  font-size: 1rem;
+}
+
+.accordion-label {
+  flex: 1;
+}
+
+.accordion-count {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  background: rgba(255,255,255,0.06);
+  padding: 1px 8px;
+  border-radius: 12px;
+  min-width: 22px;
+  text-align: center;
+}
+
+.accordion-content {
+  padding: 4px 8px 8px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.accordion-phrase-btn,
+.patient-resp-accordion-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid transparent;
   border-radius: var(--radius-sm);
   color: var(--text);
-  cursor: pointer;
   font-size: 0.85rem;
+  cursor: pointer;
   transition: var(--transition);
   text-align: left;
   line-height: 1.3;
+  width: 100%;
 }
 
-.phrase-chip:hover {
-  background: rgba(76, 175, 80, 0.1);
-  border-color: var(--success);
-  transform: translateY(-1px);
+.accordion-phrase-btn:hover,
+.patient-resp-accordion-btn:hover {
+  background: rgba(76,175,80,0.1);
+  border-color: rgba(76,175,80,0.25);
+  transform: translateX(3px);
 }
 
-.phrase-chip .lang-icon {
+.accordion-phrase-btn:active,
+.patient-resp-accordion-btn:active {
+  transform: scale(0.98);
+}
+
+.phrase-text {
+  flex: 1;
+}
+
+.phrase-arrow {
+  font-size: 0.75rem;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+
+.accordion-phrase-btn:hover .phrase-arrow {
+  opacity: 1;
+}
+
+.lang-icon {
   font-size: 1rem;
   flex-shrink: 0;
-}
-
-.phrase-chip.emergency {
-  background: rgba(244, 67, 54, 0.08);
-  border-color: rgba(244, 67, 54, 0.3);
-  font-weight: 600;
-}
-
-.phrase-chip.emergency:hover {
-  background: rgba(244, 67, 54, 0.2);
-  border-color: var(--danger);
-}
-
-.phrases-list::-webkit-scrollbar {
-  width: 4px;
-}
-
-.phrases-list::-webkit-scrollbar-thumb {
-  background: var(--card-border);
-  border-radius: 2px;
-}
-
-/* === Risposte Paziente === */
-.patient-responses-panel {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: var(--radius);
-  margin-bottom: 1rem;
-  overflow: hidden;
-}
-
-.patient-responses-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 16px;
-  background: linear-gradient(135deg, rgba(76,175,80,0.15), rgba(108,99,255,0.1));
-  border-bottom: 1px solid var(--card-border);
-}
-
-.patient-responses-header h2 {
-  font-size: 1rem;
-  margin: 0;
-}
-
-.badge-info {
-  font-size: 0.75rem;
-  background: rgba(255,255,255,0.08);
-  padding: 4px 10px;
-  border-radius: 20px;
-  color: var(--text-dim);
-}
-
-.patient-responses-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 6px;
-  padding: 10px;
-  max-height: 280px;
-  overflow-y: auto;
-}
-
-.patient-responses-grid::-webkit-scrollbar {
-  width: 4px;
-}
-
-.patient-responses-grid::-webkit-scrollbar-thumb {
-  background: var(--card-border);
-  border-radius: 2px;
-}
-
-.patient-resp-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 10px;
-  background: rgba(76,175,80,0.08);
-  border: 1px solid rgba(76,175,80,0.2);
-  border-radius: var(--radius-sm);
-  color: var(--text);
-  font-size: 0.8rem;
-  cursor: pointer;
-  transition: var(--transition);
-  text-align: left;
-}
-
-.patient-resp-btn:hover {
-  background: rgba(76,175,80,0.2);
-  border-color: var(--success);
-  transform: translateY(-1px);
-}
-
-.patient-resp-btn:active {
-  transform: scale(0.97);
 }
 
 .resp-emoji {
-  font-size: 1.1rem;
+  font-size: 1rem;
   flex-shrink: 0;
 }
 
-.resp-text {
-  font-weight: 500;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.resp-translation {
+.resp-translate {
   font-size: 0.7rem;
   color: var(--success);
   margin-left: auto;
   white-space: nowrap;
+  opacity: 0.7;
+}
+
+.patient-resp-accordion-btn:hover .resp-translate {
+  opacity: 1;
 }
 
 /* === kdb === */

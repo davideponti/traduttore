@@ -70,11 +70,10 @@ class TraduttoreApp {
       clipMode: document.getElementById('clipMode'),
       autoTranslate: document.getElementById('autoTranslate'),
       autoSpeak: document.getElementById('autoSpeak'),
-      phrasesList: document.getElementById('phrasesList'),
-      phrasesCategories: document.getElementById('phrasesCategories'),
+      phrasesAccordion: document.getElementById('phrasesAccordion'),
+      patientResponsesAccordion: document.getElementById('patientResponsesAccordion'),
       historyPanel: document.getElementById('historyPanel'),
-      historyList: document.getElementById('historyList'),
-      patientResponsesList: document.getElementById('patientResponsesList')
+      historyList: document.getElementById('historyList')
     };
   }
 
@@ -174,16 +173,6 @@ class TraduttoreApp {
     this.dom.modeITEN.addEventListener('click', () => this._setMode('it', 'en'));
     this.dom.modeENIT.addEventListener('click', () => this._setMode('en', 'it'));
     
-    // Filtri categorie frasi
-    this.dom.phrasesCategories.addEventListener('click', (e) => {
-      const btn = e.target.closest('.cat-btn');
-      if (!btn) return;
-      
-      this.dom.phrasesCategories.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      this._renderMedicalPhrases(btn.dataset.category);
-    });
-    
     // Impostazioni
     this.dom.sensitivitySlider.addEventListener('input', (e) => {
       const val = e.target.value;
@@ -236,27 +225,94 @@ class TraduttoreApp {
   }
 
   _renderPatientResponses() {
-    if (!this.dom.patientResponsesList) return;
-    
-    this.dom.patientResponsesList.innerHTML = '';
-    
+    if (!this.dom.patientResponsesAccordion) return;
+    this.dom.patientResponsesAccordion.innerHTML = '';
     if (!this.patientResponses || this.patientResponses.length === 0) return;
-    
-    this.patientResponses.forEach(resp => {
-      const btn = document.createElement('button');
-      btn.className = 'patient-resp-btn';
-      const isEN = this.translator.sourceLang === 'it';
-      const displayText = isEN ? resp.english : resp.italian;
-      const translateTo = isEN ? resp.italian : resp.english;
+
+    const groups = {
+      '😣 Dolore e Sintomi': { keywords: ['pain', 'hurt', 'nauseous', 'vomit', 'dizzy', 'bleeding', 'fever', 'head', 'stomach'], emoji: '😣' },
+      '😤 Difficoltà e Urgenze': { keywords: ['cannot', 'breathe', 'help', 'scared', 'call', 'cold', 'hot', 'sleep', 'see', 'hear', 'fell'], emoji: '😤' },
+      '🙂 Bisogni e Stati': { keywords: ['thirsty', 'hungry', 'water', 'bathroom', 'medicine', 'allergic', 'diabetic', 'pressure'], emoji: '🙂' },
+      '📝 Risposte Base': { keywords: ['yes', 'no', 'understand', 'repeat', 'thank', 'better', 'worse', 'when'], emoji: '📝' }
+    };
+
+    const unassigned = [...this.patientResponses];
+
+    Object.entries(groups).forEach(([groupName, groupInfo]) => {
+      const matched = [];
+      const remaining = [];
       
-      btn.innerHTML = `<span class="resp-emoji">${resp.emoji}</span><span class="resp-text">${displayText}</span><span class="resp-translation">→ ${translateTo}</span>`;
-      
-      btn.addEventListener('click', () => {
-        this._usePatientResponse(displayText, translateTo, isEN ? 'en-US' : 'it-IT');
+      unassigned.forEach(resp => {
+        const matchText = resp.english.toLowerCase();
+        const found = groupInfo.keywords.some(k => matchText.includes(k));
+        if (found) matched.push(resp);
+        else remaining.push(resp);
       });
-      
-      this.dom.patientResponsesList.appendChild(btn);
+
+      unassigned.length = 0;
+      unassigned.push(...remaining);
+
+      if (matched.length === 0) return;
+
+      const details = document.createElement('details');
+      details.className = 'accordion-item';
+
+      const summary = document.createElement('summary');
+      summary.className = 'accordion-summary';
+      summary.innerHTML = `<span class="accordion-summary-icon">${groupInfo.emoji}</span><span class="accordion-label">${groupName}</span><span class="accordion-count">${matched.length}</span>`;
+      details.appendChild(summary);
+
+      const content = document.createElement('div');
+      content.className = 'accordion-content';
+
+      matched.forEach(resp => {
+        const isEN = this.translator.sourceLang === 'it';
+        const displayText = isEN ? resp.english : resp.italian;
+        const translateTo = isEN ? resp.italian : resp.english;
+
+        const btn = document.createElement('button');
+        btn.className = 'patient-resp-accordion-btn';
+        btn.innerHTML = `<span class="resp-emoji">${resp.emoji}</span><span class="phrase-text">${displayText}</span><span class="resp-translate">${translateTo}</span>`;
+        btn.title = translateTo;
+
+        btn.addEventListener('click', () => {
+          this._usePatientResponse(displayText, translateTo, isEN ? 'en-US' : 'it-IT');
+        });
+
+        content.appendChild(btn);
+      });
+
+      details.appendChild(content);
+      this.dom.patientResponsesAccordion.appendChild(details);
     });
+
+    // Ultimo gruppo: ciò che resta
+    if (unassigned.length > 0) {
+      const details = document.createElement('details');
+      details.className = 'accordion-item';
+      const summary = document.createElement('summary');
+      summary.className = 'accordion-summary';
+      summary.innerHTML = `<span class="accordion-summary-icon">🗯️</span><span class="accordion-label">Altre risposte</span><span class="accordion-count">${unassigned.length}</span>`;
+      details.appendChild(summary);
+      const content = document.createElement('div');
+      content.className = 'accordion-content';
+
+      unassigned.forEach(resp => {
+        const isEN = this.translator.sourceLang === 'it';
+        const displayText = isEN ? resp.english : resp.italian;
+        const translateTo = isEN ? resp.italian : resp.english;
+        const btn = document.createElement('button');
+        btn.className = 'patient-resp-accordion-btn';
+        btn.innerHTML = `<span class="resp-emoji">${resp.emoji}</span><span class="phrase-text">${displayText}</span><span class="resp-translate">${translateTo}</span>`;
+        btn.addEventListener('click', () => {
+          this._usePatientResponse(displayText, translateTo, isEN ? 'en-US' : 'it-IT');
+        });
+        content.appendChild(btn);
+      });
+
+      details.appendChild(content);
+      this.dom.patientResponsesAccordion.appendChild(details);
+    }
   }
 
   _usePatientResponse(text, translation, speakLang) {
@@ -296,36 +352,52 @@ class TraduttoreApp {
   }
 
   _renderMedicalPhrases(category) {
-    if (!this.dom.phrasesList) return;
-    
-    const phrases = category === 'all' 
-      ? this.allMedicalPhrases 
-      : this.allMedicalPhrases.filter(p => p.category === category);
-    
-    this.dom.phrasesList.innerHTML = '';
-    
-    if (!phrases || phrases.length === 0) {
-      this.dom.phrasesList.innerHTML = '<div style="color: var(--text-dim); font-size: 0.85rem; padding: 10px;">Nessuna frase in questa categoria.</div>';
-      return;
-    }
-    
-    phrases.forEach(phrase => {
-      const chip = document.createElement('button');
-      chip.className = 'phrase-chip';
-      
-      const isITtoEN = this.translator.sourceLang === 'it';
-      const icon = isITtoEN ? '🇮🇹' : '🇬🇧';
-      const text = isITtoEN ? phrase.text : phrase.translation;
-      const translation = isITtoEN ? phrase.translation : phrase.text;
-      
-      chip.innerHTML = `<span class="lang-icon">${icon}</span> ${text}`;
-      chip.title = translation;
-      
-      chip.addEventListener('click', () => {
-        this._useMedicalPhrase(text, translation);
+    if (!this.dom.phrasesAccordion) return;
+
+    const categories = ['accoglienza', 'sintomi', 'corpo', 'cure', 'procedure', 'anagrafica', 'rassicurazioni', 'dimissioni'];
+    const categoryLabels = {
+      accoglienza: '🙋 Accoglienza', sintomi: '🩺 Sintomi', corpo: '👤 Parti del corpo',
+      cure: '💊 Cure e Medicine', procedure: '🛏️ Procedure', anagrafica: '📄 Anagrafica',
+      rassicurazioni: '💙 Rassicurazioni', dimissioni: '🏠 Dimissioni'
+    };
+
+    this.dom.phrasesAccordion.innerHTML = '';
+
+    categories.forEach(cat => {
+      const phrases = this.allMedicalPhrases.filter(p => p.category === cat);
+      if (phrases.length === 0) return;
+
+      const details = document.createElement('details');
+      details.className = 'accordion-item';
+
+      const summary = document.createElement('summary');
+      summary.className = 'accordion-summary';
+      summary.innerHTML = `<span class="accordion-summary-icon">📋</span><span class="accordion-label">${categoryLabels[cat] || cat}</span><span class="accordion-count">${phrases.length}</span>`;
+      details.appendChild(summary);
+
+      const content = document.createElement('div');
+      content.className = 'accordion-content';
+
+      phrases.forEach(phrase => {
+        const isITtoEN = this.translator.sourceLang === 'it';
+        const icon = isITtoEN ? '🇮🇹' : '🇬🇧';
+        const text = isITtoEN ? phrase.text : phrase.translation;
+        const translation = isITtoEN ? phrase.translation : phrase.text;
+
+        const btn = document.createElement('button');
+        btn.className = 'accordion-phrase-btn';
+        btn.innerHTML = `<span class="lang-icon">${icon}</span><span class="phrase-text">${text}</span><span class="phrase-arrow">🔊</span>`;
+        btn.title = translation;
+
+        btn.addEventListener('click', () => {
+          this._useMedicalPhrase(text, translation);
+        });
+
+        content.appendChild(btn);
       });
-      
-      this.dom.phrasesList.appendChild(chip);
+
+      details.appendChild(content);
+      this.dom.phrasesAccordion.appendChild(details);
     });
   }
 

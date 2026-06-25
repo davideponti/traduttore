@@ -22,35 +22,27 @@
       </button>
     </div>
 
-    <!-- FRASI MEDICHE VELOCI -->
-    <div class="phrases-panel">
-      <div class="phrases-header">
-        <h2>📋 Frasi Mediche Rapide</h2>
-        <div class="phrases-categories" id="phrasesCategories">
-          <button class="cat-btn active" data-category="all">Tutte</button>
-          <button class="cat-btn" data-category="accoglienza">Accoglienza</button>
-          <button class="cat-btn" data-category="sintomi">Sintomi</button>
-          <button class="cat-btn" data-category="corpo">Parti del corpo</button>
-          <button class="cat-btn" data-category="cure">Cure</button>
-          <button class="cat-btn" data-category="procedure">Procedure</button>
-          <button class="cat-btn" data-category="anagrafica">Anagrafica</button>
-          <button class="cat-btn" data-category="rassicurazioni">Rassicurazioni</button>
-          <button class="cat-btn" data-category="dimissioni">Dimissioni</button>
-        </div>
+    <!-- FRASI MEDICHE VELOCI - ACCORDION -->
+    <div class="accordion-block">
+      <div class="accordion-block-header">
+        <span class="accordion-block-icon">📋</span>
+        <span>Frasi per l'Infermiere</span>
+        <span class="accordion-block-badge">Clicca per parlare al paziente</span>
       </div>
-      <div class="phrases-list" id="phrasesList">
-        <!-- Popolato da JS -->
+      <div class="accordion-container" id="phrasesAccordion">
+        <!-- Popolato da JS: <details> per ogni categoria -->
       </div>
     </div>
 
-    <!-- RISPOSTE DEL PAZIENTE -->
-    <div class="patient-responses-panel">
-      <div class="patient-responses-header">
-        <h2>🗣️ Risposte del Paziente</h2>
-        <span class="badge-info">Mostra al paziente e fagli cliccare</span>
+    <!-- RISPOSTE DEL PAZIENTE - ACCORDION -->
+    <div class="accordion-block">
+      <div class="accordion-block-header accent-green">
+        <span class="accordion-block-icon">🗣️</span>
+        <span>Risposte del Paziente</span>
+        <span class="accordion-block-badge">Mostra al paziente e fai cliccare</span>
       </div>
-      <div class="patient-responses-grid" id="patientResponsesList">
-        <!-- Popolato da JS -->
+      <div class="accordion-container" id="patientResponsesAccordion">
+        <!-- Popolato da JS: <details> per ogni categoria -->
       </div>
     </div>
 
