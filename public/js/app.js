@@ -258,7 +258,7 @@ class TraduttoreApp {
     
     phrases.forEach(phrase => {
       const chip = document.createElement('button');
-      chip.className = `phrase-chip${phrase.category === 'emergenza' ? ' emergency' : ''}`;
+      chip.className = 'phrase-chip';
       
       const isITtoEN = this.translator.sourceLang === 'it';
       const icon = isITtoEN ? '🇮🇹' : '🇬🇧';
