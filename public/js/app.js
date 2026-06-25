@@ -58,6 +58,8 @@ class TraduttoreApp {
       interimText: document.getElementById('interimText'),
       finalText: document.getElementById('finalText'),
       translationResult: document.getElementById('translationResult'),
+      translationMicContainer: document.getElementById('translationMicContainer'),
+      translationMicBtn: document.getElementById('translationMicBtn'),
       suggestionsPanel: document.getElementById('suggestionsPanel'),
       suggestionsList: document.getElementById('suggestionsList'),
       fragmentBadge: document.getElementById('fragmentBadge'),
@@ -144,9 +146,14 @@ class TraduttoreApp {
       // Aggiungi a storico
       this._addToHistory(this.currentText, text);
       
+    // Mostra microfono animato per riprodurre la traduzione
+    this._showTranslationMic(text);
+
       if (this.dom.autoSpeak.checked) {
         const targetLang = this.translator.targetLang === 'it' ? 'it-IT' : 'en-US';
-        setTimeout(() => this.translator.speak(text, targetLang), 300);
+        setTimeout(() => {
+          this.translator.speak(text, targetLang);
+        }, 300);
       }
     };
 
@@ -156,6 +163,14 @@ class TraduttoreApp {
 
     this.translator.onSuggestions = (suggestions) => {
       this._renderSuggestions(suggestions);
+    };
+
+    this.translator.onSpeakStart = () => {
+      this._startMicAnimation();
+    };
+
+    this.translator.onSpeakEnd = () => {
+      this._stopMicAnimation();
     };
   }
 
@@ -168,6 +183,9 @@ class TraduttoreApp {
     this.dom.speakBtn.addEventListener('click', () => this._speak());
     this.dom.copyBtn.addEventListener('click', () => this._copy());
     this.dom.clearBtn.addEventListener('click', () => this._clear());
+    
+    // Microfono animato della traduzione
+    this.dom.translationMicBtn.addEventListener('click', () => this._speak());
     
     // Modalità
     this.dom.modeITEN.addEventListener('click', () => this._setMode('it', 'en'));
@@ -327,8 +345,13 @@ class TraduttoreApp {
     
     this._addToHistory(text, translation);
     
+    // Mostra microfono animato per riprodurre la traduzione
+    this._showTranslationMic(translation);
+    
     // Leggi la risposta in italiano per l'infermiere
-    setTimeout(() => this.translator.speak(translation, 'it-IT'), 300);
+    setTimeout(() => {
+      this.translator.speak(translation, 'it-IT');
+    }, 300);
   }
 
   _loadVoices() {
@@ -416,9 +439,33 @@ class TraduttoreApp {
     // Aggiungi a storico
     this._addToHistory(text, translation);
     
+    // Mostra microfono animato per riprodurre la traduzione
+    this._showTranslationMic(translation);
+    
     // Leggi automaticamente
     const targetLang = this.translator.targetLang === 'it' ? 'it-IT' : 'en-US';
-    setTimeout(() => this.translator.speak(translation, targetLang), 300);
+    setTimeout(() => {
+      this.translator.speak(translation, targetLang);
+    }, 300);
+  }
+
+  // === Microfono animato per riproduzione traduzione ===
+
+  _showTranslationMic(text) {
+    if (!this.dom.translationMicContainer) return;
+    this.dom.translationMicContainer.style.display = 'flex';
+    this.dom.translationMicContainer.classList.remove('speaking');
+    this.dom.translationMicBtn.title = `Ascolta: ${text}`;
+  }
+
+  _startMicAnimation() {
+    if (!this.dom.translationMicContainer) return;
+    this.dom.translationMicContainer.classList.add('speaking');
+  }
+
+  _stopMicAnimation() {
+    if (!this.dom.translationMicContainer) return;
+    this.dom.translationMicContainer.classList.remove('speaking');
   }
 
   // === Storico ===
@@ -569,6 +616,7 @@ class TraduttoreApp {
     if (this.currentTranslation) {
       const targetLang = this.translator.targetLang === 'it' ? 'it-IT' : 'en-US';
       this.translator.speak(this.currentTranslation, targetLang);
+      this._startMicAnimation();
     }
   }
 
@@ -594,6 +642,8 @@ class TraduttoreApp {
     this.dom.finalText.innerHTML = '<span class="placeholder">Il testo riconosciuto apparirà qui...</span>';
     this.dom.interimText.textContent = '';
     this.dom.translationResult.innerHTML = '<span class="placeholder">La traduzione apparirà qui...</span>';
+    this.dom.translationMicContainer.style.display = 'none';
+    this.dom.translationMicContainer.classList.remove('speaking');
     this.dom.suggestionsPanel.style.display = 'none';
     this.dom.confidenceInfo.style.display = 'none';
     this.dom.audioBar.style.width = '0%';

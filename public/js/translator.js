@@ -14,6 +14,8 @@ class Translator {
     this.onTranslation = null;
     this.onTranslationError = null;
     this.onSuggestions = null;
+    this.onSpeakStart = null;
+    this.onSpeakEnd = null;
   }
 
   setLang(source, target) {
@@ -195,6 +197,16 @@ class Translator {
     if (voice) {
       utterance.voice = voice;
     }
+    
+    if (this.onSpeakStart) this.onSpeakStart();
+    
+    utterance.onend = () => {
+      if (this.onSpeakEnd) this.onSpeakEnd();
+    };
+    
+    utterance.onerror = () => {
+      if (this.onSpeakEnd) this.onSpeakEnd();
+    };
     
     window.speechSynthesis.speak(utterance);
   }
